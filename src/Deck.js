@@ -110,9 +110,9 @@ class Deck extends Component {
             };
             //Default render rest of the cards without swipe feature
             return (
-                <View key={item.id} style={styles.cardStyle}>
+                <Animated.View key={item.id} style={styles.cardStyle}>
                     {this.props.renderCard(item)}
-                </View>
+                </Animated.View>
             );
         }).reverse();
     }
