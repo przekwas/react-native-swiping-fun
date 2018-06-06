@@ -7,8 +7,8 @@ const SWIPE_OUT_DURATION = 250;
 
 class Deck extends Component {
     static defaultProps = {
-        onSwipeRight: () => {},
-        onSwipeLeft: () => {}
+        onSwipeRight: () => { },
+        onSwipeLeft: () => { }
     }
 
     constructor(props) {
@@ -37,7 +37,8 @@ class Deck extends Component {
 
         this.state = {
             panResponder,
-            position
+            position,
+            index: 0
         };
 
     }
@@ -45,7 +46,7 @@ class Deck extends Component {
     forceSwipe(direction) {
         const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
         Animated.timing(this.state.position, {
-            toValue: { x: x * 2, y: 0 },    
+            toValue: { x: x * 2, y: 0 },
             duration: SWIPE_OUT_DURATION
         }).start(() => {
             this.onSwipeComplete(direction);
@@ -57,6 +58,11 @@ class Deck extends Component {
         const item = data[this.state.index];
 
         direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+        this.state.position.setValue({
+            x: 0,
+            y: 0
+        });
+        this.setState({ index: this.state.index + 1 });
     }
 
     resetPosition() {
@@ -80,18 +86,29 @@ class Deck extends Component {
     }
 
     renderCards() {
-        return this.props.data.map((item, index) => {
-            if (index === 0) {
+
+        //Case if when there's no more cards left to render in the deck
+        if(this.state.index >= this.props.data.length) {
+            return this.props.renderNoMoreCards();
+        }
+
+        return this.props.data.map((item, i) => {
+            //Case if card has been swiped and shouldn't be rendered
+            if (i < this.state.index) {
+                return null;
+            };
+            //Add animated view to next rendered card
+            if (i === this.state.index) {
                 return (
                     <Animated.View
-                        key={index}
+                        key={item.id}
                         style={this.getCardStyle()}
                         {...this.state.panResponder.panHandlers}>
                         {this.props.renderCard(item)}
                     </Animated.View>
                 );
-            }
-
+            };
+            //Default render rest of the cards without swipe feature
             return this.props.renderCard(item);
         });
     }

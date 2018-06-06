@@ -34,12 +34,26 @@ export default class App extends React.Component {
     );
   }
 
+  renderNoMoreCards() {
+    return (
+      <Card title="All done!">
+        <Text style={styles.textStyle}>No more content left to swipe through!</Text>
+        <Button
+          icon={{ name: 'code' }}
+          backgroundColor={'#03A9F4'}
+          title="Get More!"
+        />
+      </Card>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Deck
           data={DATA}
           renderCard={this.renderCard}
+          renderNoMoreCards={this.renderNoMoreCards}
         />
       </View>
     );
