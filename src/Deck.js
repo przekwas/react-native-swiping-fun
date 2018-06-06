@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Animated, PanResponder, Dimensions } from 'react-native';
+import { StyleSheet, View, Animated, PanResponder, Dimensions, LayoutAnimation, UIManager } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.5 * SCREEN_WIDTH;
@@ -15,7 +15,7 @@ class Deck extends Component {
         super(props);
 
         const position = new Animated.ValueXY();
-
+        //Handling the gestures on the screen
         const panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => true,
             onPanResponderMove: (event, gesture) => {
@@ -41,6 +41,20 @@ class Deck extends Component {
             index: 0
         };
 
+    }
+
+    //If data list changes mid-deck resets the index back to 0
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.data !== this.props.data) {
+            this.setState({ index: 0 });
+        }
+    }
+
+    componentWillMount() {
+        //Android enabled animations
+        UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+        //Make the cards animate into place instead of snapping into position
+        LayoutAnimation.spring();
     }
 
     forceSwipe(direction) {
@@ -72,7 +86,7 @@ class Deck extends Component {
     }
 
     getCardStyle() {
-
+    //Animating the cards and interpolating their movement with the animation
         const { position } = this.state;
         const rotate = position.x.interpolate({
             inputRange: [-SCREEN_WIDTH * 2.0, 0, SCREEN_WIDTH * 2.0],
@@ -110,7 +124,7 @@ class Deck extends Component {
             };
             //Default render rest of the cards without swipe feature
             return (
-                <Animated.View key={item.id} style={styles.cardStyle}>
+                <Animated.View key={item.id} style={[styles.cardStyle, { top: 10 * (i - this.state.index) }]}>
                     {this.props.renderCard(item)}
                 </Animated.View>
             );
