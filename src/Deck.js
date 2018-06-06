@@ -88,7 +88,7 @@ class Deck extends Component {
     renderCards() {
 
         //Case if when there's no more cards left to render in the deck
-        if(this.state.index >= this.props.data.length) {
+        if (this.state.index >= this.props.data.length) {
             return this.props.renderNoMoreCards();
         }
 
@@ -102,15 +102,19 @@ class Deck extends Component {
                 return (
                     <Animated.View
                         key={item.id}
-                        style={this.getCardStyle()}
+                        style={[this.getCardStyle(), styles.cardStyle]}
                         {...this.state.panResponder.panHandlers}>
                         {this.props.renderCard(item)}
                     </Animated.View>
                 );
             };
             //Default render rest of the cards without swipe feature
-            return this.props.renderCard(item);
-        });
+            return (
+                <View key={item.id} style={styles.cardStyle}>
+                    {this.props.renderCard(item)}
+                </View>
+            );
+        }).reverse();
     }
 
     render() {
@@ -121,5 +125,12 @@ class Deck extends Component {
         );
     }
 };
+
+const styles = StyleSheet.create({
+    cardStyle: {
+        position: 'absolute',
+        width: SCREEN_WIDTH
+    }
+});
 
 export default Deck;
