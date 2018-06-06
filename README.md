@@ -4,4 +4,7 @@
 Using Animnated and PanResponder to learn how to do some fun interpolating, gesture usage, and animating in React Native!
 
 ### Running
-Built using Expo, will post a QR code / link upon completing the goal!
+Built using Expo!
+
+Here's a published link to the QR code: 
+https://exp.host/@przekwas/swipe
